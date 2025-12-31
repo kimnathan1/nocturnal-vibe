@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizing the Vibe | Nightlife Agency</title>
+    
+    <!-- Google Fonts: Syne (Artistic/Bold) + Inter (Clean/Readable) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            /* CHANGED: Purple -> Red System */
+            --accent-color: #ff003c;      /* Electric Red */
+            --accent-glow: #ff003c80;     /* Red Glow */
+            --secondary-accent: #ffffff;  /* White for sharp contrast against red */
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Smooth Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection Color */
+        ::selection {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3 {
+            font-family: 'Syne', sans-serif;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        /* --- ANIMATIONS --- */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 1. HERO SECTION (POSTER STYLE) --- */
+        .hero-section {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            /* CHANGED: Background gradient to Dark Red */
+            background: radial-gradient(circle at center, #3a0000 0%, #000000 90%);
+            padding: 20px;
+        }
+
+        /* Abstract Background Elements */
+        .hero-bg-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            opacity: 0.15; /* Slightly reduced for better text visibility */
+            filter: blur(80px);
+            z-index: 0;
+            animation: pulse 4s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.1; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .hero-eyebrow {
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            color: #cccccc;
+            margin-bottom: 20px;
+            z-index: 1;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 12vw, 9rem); /* Responsive Giant Text */
+            line-height: 0.85;
+            z-index: 1;
+            /* CHANGED: Removed overlay mode for better visibility */
+            /* mix-blend-mode: overlay; <-- REMOVED */ 
+            color: #ffffff;
+            text-shadow: 0 0 50px rgba(255, 0, 60, 0.5); /* Stronger Red Shadow */
+            margin-bottom: 30px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #ddd; /* Brighter text */
+            max-width: 600px;
+            z-index: 1;
+            letter-spacing: 1px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: rgba(255,255,255,0.5);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
+        }
+
+        /* --- 2. MARKETING PITCH (STRATEGY) --- */
+        .strategy-section {
+            padding: 120px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.8); /* Outline text effect */
+            margin-bottom: 10px;
+        }
+        
+        .section-header span {
+            display: block;
+            color: var(--accent-color);
+            -webkit-text-stroke: 0;
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .strategy-card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 2px; /* Sharp edges for poster feel */
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 30px -10px rgba(255, 0, 60, 0.2);
+        }
+
+        .strategy-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 3rem;
+            color: rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .strategy-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .strategy-card p {
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+
+        /* --- 3. GALLERY (MASONRY) --- */
+        .gallery-section {
+            padding: 50px 4%;
+            background: #000;
+        }
+
+        .gallery-title-wrapper {
+            margin-bottom: 40px;
+            padding-left: 20px;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .gallery-title-wrapper h2 {
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .masonry-grid {
+            column-count: 3;
+            column-gap: 20px;
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            cursor: crosshair;
+        }
+
+        .masonry-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            /* Filter Logic: Dark & Moody by default */
+            filter: brightness(0.7) grayscale(0.6) contrast(1.1); 
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Hover Effect: Full Color, Bright, Slight Zoom */
+        .masonry-item:hover img {
+            filter: brightness(1.1) grayscale(0) contrast(1);
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .masonry-item:hover .image-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .image-caption {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        /* Responsive Columns */
+        @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }
+        @media (max-width: 600px) { 
+            .masonry-grid { column-count: 1; } 
+            .hero-title { font-size: 3.5rem; }
+        }
+
+        /* --- 4. FOOTER / CONTACT --- */
+        footer {
+            padding: 100px 20px;
+            text-align: center;
+            /* CHANGED: Footer gradient to Dark Red */
+            background: linear-gradient(to top, #200005, #000);
+            border-top: 1px solid #222;
+        }
+
+        .cta-text {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .btn-inquire {
+            display: inline-block;
+            padding: 18px 50px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-inquire:hover {
+            border-color: var(--accent-color);
+            background: rgba(255, 0, 60, 0.1);
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.3);
+        }
+
+        .footer-copy {
+            margin-top: 60px;
+            color: #555;
+            font-size: 0.8rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. HERO SECTION -->
+    <header class="hero-section">
+        <div class="hero-bg-glow"></div>
+        <p class="hero-eyebrow fade-in-up">Nightlife Capture & Strategy</p>
+        <h1 class="hero-title fade-in-up" style="transition-delay: 0.1s;">
+            VISUALIZING<br>THE VIBE
+        </h1>
+        <p class="hero-subtitle fade-in-up" style="transition-delay: 0.2s;">
+            We don't just take photos. We curate the atmosphere, detail, and emotion that sells the night.
+        </p>
+        <div class="scroll-indicator">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <!-- 2. MARKETING STRATEGY SECTION -->
+    <section class="strategy-section">
+        <div class="section-header fade-in-up">
+            <h2>PHOTOGRAPHY IS<br><span>MARKETING</span></h2>
+        </div>
+
+        <div class="strategy-grid">
+            <!-- Card 1 -->
+            <div class="strategy-card fade-in-up" style="transition-delay: 0.1s;">
+                <div class="strategy-number">01</div>
+                <h3>STOP THE SCROLL</h3>
+                <p>In a saturated feed, attention is currency. We create high-contrast, thumb-stopping visuals that demand to be seen amidst the noise.</p>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="strategy-card fade-in-up" style="transition-delay: 0.2s;">
+                <div class="strategy-number">02</div>
+                <h3>THE VIRAL LOOP</h3>
+                <p>We capture guests at their peak. They post, tag, and share—turning their personal accounts into organic ad space for your venue.</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="strategy-card fade-in-up" style="transition-delay: 0.3s;">
+                <div class="strategy-number">03</div>
+                <h3>CONVERSION</h3>
+                <p>FOMO sells tables. We translate the unseen energy of the night into tangible assets that drive reservations and ticket sales.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. GALLERY SECTION (MASONRY) -->
+    <section class="gallery-section">
+        <div class="gallery-title-wrapper fade-in-up">
+            <h2>ARCHIVE: MOOD & LIGHTS</h2>
+        </div>
+
+        <div class="masonry-grid">
+            <!-- Image 1: Vertical -->
+            <div class="masonry-item fade-in-up">
+                <img src="https://images.unsplash.com/photo-1574391884720-3850b597d6dd?q=80&w=800&auto=format&fit=crop" alt="Neon Club Vibe">
+                <div class="image-overlay">
+                    <div class="image-caption">Neon Haze</div>
+                </div>
+            </div>
+
+            <!-- Image 2: Horizontal -->
+            <div class="masonry-item fade-in-up">
+                <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=800&auto=format&fit=crop" alt="Crowd Energy">
+                <div class="image-overlay">
+                    <div class="image-caption">Peak Energy</div>
+                </div>
+            </div>
+
+            <!-- Image 3: Detail/Cocktail -->
+            <div class="masonry-item fade-in-up">
+                <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800&auto=format&fit=crop" alt="Cocktail Detail">
+                <div class="image-overlay">
+                    <div class="image-caption">The Signature Serve</div>
+                </div>
+            </div>
+
+            <!-- Image 4: DJ/Light -->
+            <div class="masonry-item fade-in-up">
+                <img src="https://images.unsplash.com/photo-1571266028243-371695039989?q=80&w=800&auto=format&fit=crop" alt="DJ Silhouette">
+                <div class="image-overlay">
+                    <div class="image-caption">Sonic Control</div>
+                </div>
+            </div>
+
+            <!-- Image 5: Moody Vertical -->
+            <div class="masonry-item fade-in-up">
+                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800&auto=format&fit=crop" alt="Event Lighting">
+                <div class="image-overlay">
+                    <div class="image-caption">Atmosphere</div>
+                </div>
+            </div>
+
+            <!-- Image 6: Laser -->
+            <div class="masonry-item fade-in-up">
+                <img src="https://images.unsplash.com/photo-1621356875932-841f48624176?q=80&w=800&auto=format&fit=crop" alt="Laser Lights">
+                <div class="image-overlay">
+                    <div class="image-caption">Visual Frequency</div>
+                </div>
+            </div>
+
+             <!-- Image 7: Abstract -->
+             <div class="masonry-item fade-in-up">
+                <img src="https://images.unsplash.com/photo-1557992260-ec58e38d363c?q=80&w=800&auto=format&fit=crop" alt="Abstract Lights">
+                <div class="image-overlay">
+                    <div class="image-caption">Night Blur</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FOOTER -->
+    <footer>
+        <div class="fade-in-up">
+            <h2 class="cta-text">READY TO ELEVATE<br>YOUR NIGHTLIFE BRAND?</h2>
+            <a href="mailto:contact@nocturnalvibe.com" class="btn-inquire">Inquire Now</a>
+        </div>
+        <p class="footer-copy">&copy; 2024 NOCTURNAL VIBE. All Rights Reserved.</p>
+    </footer>
+
+    <!-- INTERACTION SCRIPT -->
+    <script>
+        // Intersection Observer for Fade-in Animation
+        document.addEventListener("DOMContentLoaded", function() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Play animation once
+                    }
+                });
+            }, observerOptions);
+
+            const fadeElements = document.querySelectorAll('.fade-in-up');
+            fadeElements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
